@@ -1,0 +1,17 @@
+{
+  "name": "weather",
+  "version": "1.0.0",
+  "description": "Weather Station",
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "keywords": [
+    "weather",
+    "line",
+    "notification"
+  ],
+  "author": "Pisut Sritrakulchai",
+  "license": "ISC"
+}
