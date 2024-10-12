@@ -29,6 +29,35 @@ const lineNotify = async (message) => {
   return response.json();
 };
 
+const lineMessage = async (message) => {
+  const token = process.env.LINE_ACCESS_TOKEN;
+  const url = `https://api.line.me/v2/bot/message/push`;
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+  const body = {
+    to: process.env.USER_OR_GROUP_ID,
+    messages: [
+      {
+        type: "text",
+        text: message,
+      },
+    ],
+  };
+  const response = await fetch(url, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+  });
+  if (!response.ok)
+    throw new Error(
+      `Error sending LINE message API: ${response.status} ${response.statusText}`
+    );
+
+  return response.json();
+};
+
 const getWeather = async (lat, lng, timezone = "GMT") => {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,wind_speed_10m,apparent_temperature,rain,snowfall&hourly=temperature_2m,wind_speed_10m,apparent_temperature,rain,snowfall&timezone=${timezone}&forecast_days=2`;
 
@@ -99,7 +128,7 @@ async function main() {
   const weather = await getWeather(lat, lng, timezone);
   const formattedMessage = await formatMessage(weather);
 
-  await lineNotify(formattedMessage);
+  await lineMessage(formattedMessage);
   console.log(`Message sent: ${formattedMessage}`);
 }
 
