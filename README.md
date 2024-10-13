@@ -1,11 +1,11 @@
 # Weather Station
 
-This script fetches weather information from the Open Meteo API and sends a notification via LINE Message API.
+This script fetches weather information from the Open Meteo API and sends a notification via Telegram Bot API.
 
 ## Prerequisites
 
 - Node.js installed
-- LINE Message API Access Token
+- Telegram Bot API Access Token
 - Latitude and Longitude coordinates
 - Open Meteo API key
 
@@ -29,8 +29,8 @@ This script fetches weather information from the Open Meteo API and sends a noti
    Create a `.env` file in the project root and add the following:
 
    ```env
-   LINE_ACCESS_TOKEN=your_line_message_api_access_token
-   USER_OR_GROUP_ID=user_or_group_id
+   ACCESS_TOKEN=telegram_bot_api_access_token
+	CHAT_ID=chat_id
    LATITUDE=your_latitude
    LONGITUDE=your_longitude
    TIMEZONE=your_timezone
@@ -42,15 +42,7 @@ This script fetches weather information from the Open Meteo API and sends a noti
    npm start
    ```
 
-## Environment Variables
-
-- `LINE_ACCESS_TOKEN`: Access token for LINE Notify.
-- `USER_OR_GROUP_ID`: User or Group ID which you want to send message to
-- `LATITUDE`: Latitude coordinates for the weather location.
-- `LONGITUDE`: Longitude coordinates for the weather location.
-- `TIMEZONE`: Timezone of the location (default: GMT).
-
 ## Features
 
 - Fetches current weather information and a 5-hour forecast.
-- Notifies the information using LINE Message API.
+- Notifies the information using Telegram Bot API.

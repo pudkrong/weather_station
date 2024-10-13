@@ -1,3 +1,10 @@
+import "dotenv/config";
+
+const TELEGRAM_URL = "https://api.telegram.org";
+
+const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+const CHAT_ID = process.env.CHAT_ID;
+
 const LABELS = {
   temperature_2m: "🌡️",
   wind_speed_10m: "💨",
@@ -6,56 +13,18 @@ const LABELS = {
   snowfall: "🌨️",
 };
 
-const lineNotify = async (message) => {
-  const token = process.env.LINE_ACCESS_TOKEN;
-  const url = `https://notify-api.line.me/api/notify`;
-  const headers = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    Authorization: `Bearer ${token}`,
-  };
-  const body = {
-    message,
-  };
-  const response = await fetch(url, {
+const notifyToTelegram = async (message) => {
+  const res = await fetch(`${TELEGRAM_URL}/bot${ACCESS_TOKEN}/sendMessage`, {
     method: "POST",
-    headers,
-    body: new URLSearchParams(body),
+    headers: {
+      "Content-Type": `application/json`,
+    },
+    body: JSON.stringify({
+      chat_id: CHAT_ID,
+      text: message,
+    }),
   });
-  if (!response.ok)
-    throw new Error(
-      `Error sending LINE notification: ${response.status} ${response.statusText}`
-    );
-
-  return response.json();
-};
-
-const lineMessage = async (message) => {
-  const token = process.env.LINE_ACCESS_TOKEN;
-  const url = `https://api.line.me/v2/bot/message/push`;
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
-  };
-  const body = {
-    to: process.env.USER_OR_GROUP_ID,
-    messages: [
-      {
-        type: "text",
-        text: message,
-      },
-    ],
-  };
-  const response = await fetch(url, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body),
-  });
-  if (!response.ok)
-    throw new Error(
-      `Error sending LINE message API: ${response.status} ${response.statusText}`
-    );
-
-  return response.json();
+  if (!res.ok) throw new Error(await res.text());
 };
 
 const getWeather = async (lat, lng, timezone = "GMT") => {
@@ -128,7 +97,7 @@ async function main() {
   const weather = await getWeather(lat, lng, timezone);
   const formattedMessage = await formatMessage(weather);
 
-  await lineMessage(formattedMessage);
+  await notifyToTelegram(formattedMessage);
   console.log(`Message sent: ${formattedMessage}`);
 }
 
