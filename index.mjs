@@ -71,17 +71,23 @@ const formatMessage = async (weather) => {
     const nextHourIndex = currentTimeIndex + i;
     const nextForecast = [
       "temperature_2m",
-      "wind_speed_10m",
       "apparent_temperature",
       "rain",
       "snowfall",
+      "wind_speed_10m",
     ].reduce((result, key) => {
       result.push(
         `${LABELS[key]}: ${hourly[key][nextHourIndex]}${hourly_units[key]}`
       );
       return result;
     }, []);
-    nextHoursWeather += `Next ${i}h: ${nextForecast.join(", ")}\n`;
+    const nextHourText = hourly["time"][nextHourIndex]?.replace(
+      /[\d-]+T(\d{2})\:\d+/,
+      "$1"
+    );
+    nextHoursWeather += `Next ${nextHourText}h: ${nextForecast
+      .map((s) => s.padEnd(12))
+      .join("")}\n`;
   }
 
   return `Current:\n${currentWeather.join(", ")}\n\n${nextHoursWeather}`;
